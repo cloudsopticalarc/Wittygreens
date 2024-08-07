@@ -2,6 +2,7 @@ package com.spring.jwt.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.jwt.dto.LoginRequest;
+import com.spring.jwt.dto.ResponseLoginDto;
 import org.springframework.security.core.GrantedAuthority;
 import com.spring.jwt.jwt.JwtConfig;
 import com.spring.jwt.jwt.JwtService;
@@ -68,7 +69,14 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
         // Generate and return the JWT token
         String accessToken = jwtService.generateToken(userDetailsCustom);
-        String json = HelperUtils.JSON_WRITER.writeValueAsString(accessToken);
+
+        ResponseLoginDto responseDTO = new ResponseLoginDto();
+        responseDTO.setMessage("success");
+        responseDTO.setToken(accessToken);
+        responseDTO.setHasError(false);
+
+        String json = objectMapper.writeValueAsString(responseDTO);
+
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(json);
         log.info("End success authentication: {}", accessToken);
